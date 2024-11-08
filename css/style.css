@@ -68,7 +68,8 @@ th.unit-name {
     text-align: center;
 }
 th.unit-tex {
-    text-align: left;
+    text-align: right;
+    padding-right: 0;
 }
 th.unit-value {
     text-align: left;
