@@ -5,7 +5,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: rgb(250, 255, 246);
+    background: rgb(240, 250, 240);
 }
 
 /**
@@ -25,7 +25,17 @@ div.table-container {
     top: 50%;
     transform: translate(-50%, -50%);
 }
+/* ---- */
 
+div.table-container {
+    padding: 70px;
+    border-radius: 20px;
+    background: transparent;
+    box-shadow: -10px -10px 16px rgba(255, 255, 255, 1.0),
+                 10px  10px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- */
 table {
     border-collapse: collapse;
     --border-width: 1px;
