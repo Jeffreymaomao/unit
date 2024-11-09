@@ -12,6 +12,8 @@ export function parseTexToNumber(tex) {
         tex = tex.replace(new RegExp(key, 'g'), `(${value})`);
     }
     tex = tex.replace(/\,/g, ' ');
+    tex = tex.replace(/\\left/g, '');
+    tex = tex.replace(/\\right/g, '');
     tex = tex.replace(/\\times/g, '*');
     tex = tex.replace(/\\cdot/g, '*');
     tex = tex.replace(/\\div/g, '/');
