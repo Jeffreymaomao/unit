@@ -33,39 +33,67 @@ export function createAndAppendDOM(parent, name, attributes = {}) {
     return element;
 }
 
-export function default_hash(str) {
-    let hash = 0;
+export function extractFirstBracesContent(str, brace='{}') {
+    // extract "a{b{}c}d" -> "b{}d"
+    const braceLeft = brace[0];
+    const braceRight = brace[1];
+    let depth = 0;
+    let firstIndex = false;
     for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash |= 0; // Convert to 32-bit integer
+        if (str[i] === braceLeft) {
+            depth++;
+            if(!firstIndex) firstIndex = i;
+        } else if (str[i] === braceRight) {
+            depth--;
+            if(depth===0) return str.slice(firstIndex+1, i);
+        }
     }
-    hash = Math.abs(hash);
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //  + 'abcdefghijklmnopqrstuvwxyz' + '0123456789'
-    const n = chars.length;
-    let result = '';
-    while (hash > 0) {
-        const shift = Math.floor(Math.random() * 1000);
-        result = chars[(hash + shift) % n] + result;
-        hash = Math.floor(hash / n * 10);
-    }
-    return result;
+    return null;
 }
 
-export function uuid_hash(str) {
-    let d = 0;
+export function extractLatestBracesContent(str, brace='{}') {
+    // extract "a{b{}c}d" -> "b{}d"
+    const braceLeft = brace[0];
+    const braceRight = brace[1];
+    let depth = 0;
+    let firstIndex = false;
+    for (let i = str.length-1; i >= 0; i--) {
+        if (str[i] === braceRight) {
+            depth++;
+            if(!firstIndex) firstIndex = i;
+        } else if (str[i] === braceLeft) {
+            depth--;
+            if(depth===0) return str.slice(i + 1, firstIndex);
+        }
+    }
+    return null;
+}
+
+// 需要修改，如果{}xxx{}不能回傳第二格
+export function extractManyConnectedBracesContent(str, len = 1) {
+    let depth = 0;
+    let currentLen = 0;
+    let firstIndex = null;
+    const contentArr = [];
+    
     for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        d = (d << 5) - d + char;
-        d |= 0; // Convert to 32-bit integer
+        if (str[i] === '{') {
+            depth++;
+            if (depth === 1) {
+                firstIndex = i; // 記錄第一個 '{' 的索引
+            }
+        } else if (str[i] === '}') {
+            depth--;
+            if (depth === 0 && firstIndex !== null) {
+                contentArr.push(str.slice(firstIndex + 1, i));
+                currentLen++;
+                firstIndex = null; // 重置索引以開始尋找下一個 '{'
+                // 如果提取到所需的數量，則退出
+                if (currentLen >= len) {
+                    break;
+                }
+            }
+        }
     }
-    d = Math.abs(d);
-    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-        d += performance.now(); //use high-precision timer if available
-    }
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random() * 16) % 16 | 0;
-        d = Math.floor(d / 16);
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
+    return contentArr;
 }
