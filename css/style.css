@@ -3,49 +3,128 @@
     position: relative;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: rgb(245, 255, 245);
-    --main-color: #333;
-    color: var(--main-color);
-}
-
 /**
+ * --------------------------
+ * #ecf0f3 rgb(236, 240, 243)
+ * #d1d9e6 rgb(209, 217, 230)
+ * #597aab rgb(89, 122, 171)
+ * --------------------------
  * #ecf3f9 rgb(236, 243, 249)
+ * #d8e0e8 rgb(216, 224, 232)
+ * --------------------------
  * #f9ecf3 rgb(249, 236, 243)
- * #f3f9ec rgb(243, 249, 236)
+ * #f5e6eb rgb(245, 230, 235)
+ * --------------------------
+ * #f0f5eb rgb(240, 245, 235)
+ * #dde0da rgb(221, 224, 218)
+ * --------------------------
  **/
+
+body {
+    --font-color: #666;
+    --background-color: #ecf0f3;
+    --shaow-dark-color: #d1d9e6;
+    --shaow-light-color: #fafafa;
+    --link-color: rgb(89, 122, 171);
+    /* ----------------------------------- */
+    background: var(--background-color);
+    color: var(--font-color);
+    overflow: auto;
+    font: normal 1.0em KaTeX_Main,Times New Roman, serif;
+}
 
 main {
     width: 100vw;
     height: 100vh;
+    min-width: 720px;
+    min-height: 480px;
 }
 
-div.table-container {
+figure {
+    display: block;
     position: absolute;
+    margin: 0;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
-}
-/* ---- */
-
-div.table-container {
-    padding: 70px;
+    padding: 50px;
     border-radius: 20px;
+    transform: translate(-50%, -50%);
+    /* ---- */
+    user-select: none;
     background: transparent;
-    box-shadow: 0 0 0 rgba(255, 255, 255, 1.0) inset,
-                0 0 0 rgba(0, 0, 0, 0.1) inset,
-                -10px -10px 16px rgba(255, 255, 255, 1.0),
-                 10px  10px 16px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    text-align: center;
     transition: 0.3s;
+    box-shadow: 0 0 0 var(--shaow-light-color) inset,
+                0 0 0 var(--shaow-dark-color) inset,
+                -14px -14px 30px 0 var(--shaow-light-color),
+                 14px  14px 30px 0 var(--shaow-dark-color);
 }
 
-div.table-container:active {
-    box-shadow: -5px -5px 10px rgba(255, 255, 255, 1.0) inset,
-                 5px  5px 10px rgba(0, 0, 0, 0.1) inset,
-                0 0 0 rgba(255, 255, 255, 1.0),
-                0 0 0 rgba(0, 0, 0, 0.1);
+figure:active {
+    animation: shadowTransitionClick 0.1s ease-out forwards; /* 動畫控制陰影變化 */
+}
+
+figure:not(:active) {
+    animation: shadowTransitionRelease 0.1s ease-out forwards; /* 動畫控制陰影回來 */
+}
+
+@keyframes shadowTransitionClick {
+    0% {
+        box-shadow: 0 0 0 var(--shaow-light-color) inset,
+                    0 0 0 var(--shaow-dark-color) inset,
+                    -14px -14px 30px 0 var(--shaow-light-color),
+                     14px  14px 30px 0 var(--shaow-dark-color);
+    }
+    30% {
+        box-shadow: 0 0 0 0 var(--shaow-light-color) inset,
+                    0 0 0 0 var(--shaow-dark-color) inset,
+                    0 0 0 0 var(--shaow-light-color),
+                    0 0 0 0 var(--shaow-dark-color);
+    }
+    100% {
+        box-shadow: -14px -14px 30px 0 var(--shaow-light-color) inset,
+                     14px  14px 30px 0 var(--shaow-dark-color) inset,
+                    0 0 0 0 var(--shaow-light-color),
+                    0 0 0 0 var(--shaow-dark-color);
+    }
+}
+
+@keyframes shadowTransitionRelease {
+    0% {
+        box-shadow: -14px -14px 30px 0 var(--shaow-light-color) inset,
+                     14px  14px 30px 0 var(--shaow-dark-color) inset,
+                    0 0 0 0 var(--shaow-light-color),
+                    0 0 0 0 var(--shaow-dark-color);
+    }
+    30% {
+        box-shadow: 0 0 0 0 var(--shaow-light-color) inset,
+                    0 0 0 0 var(--shaow-dark-color) inset,
+                    0 0 0 0 var(--shaow-light-color),
+                    0 0 0 0 var(--shaow-dark-color);
+    }
+    100% {
+        box-shadow: 0 0 0 var(--shaow-light-color) inset,
+                    0 0 0 var(--shaow-dark-color) inset,
+                    -14px -14px 30px 0 var(--shaow-light-color),
+                     14px  14px 30px 0 var(--shaow-dark-color);
+    }
+}
+
+figcaption {
+    caption-side: top;
+    text-align: center;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+caption {
+    caption-side: bottom;
+    text-align: right;
+    padding-top: 10px;
+    font-size: 0.8em;
+    font-style: normal;
 }
 
 /* ---- */
@@ -56,12 +135,12 @@ table {
 }
 
 thead {
-    border-top: var(--border-width) solid var(--main-color);
-    border-bottom: var(--border-width) solid var(--main-color);
+    border-top: var(--border-width) solid var(--font-color);
+    border-bottom: var(--border-width) solid var(--font-color);
 }
 
 tbody {
-    border-bottom: var(--border-width) solid var(--main-color);
+    border-bottom: var(--border-width) solid var(--font-color);
 }
 
 thead:before, tbody:after {
@@ -69,7 +148,7 @@ thead:before, tbody:after {
     position: absolute;
     display: block;
     width: 100%;
-    border-top: var(--border-width) solid var(--main-color);
+    border-top: var(--border-width) solid var(--font-color);
 }
 
 thead:before {
@@ -102,4 +181,13 @@ th.unit-converted {
 }
 th.unit-symb {
     text-align: left;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: 1px solid underline; 
 }
