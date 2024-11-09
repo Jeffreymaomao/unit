@@ -98,7 +98,7 @@ class App {
             || e.key==='ArrowRight'
             || e.key==='ArrowDown'
             || e.key==='ArrowLeft'
-        ) {
+            ) {
             this.showNumericValue = !this.showNumericValue;
             Object.keys(this.dimLessDom).forEach((unitName)=>{
                 const dimLessValueTex  = this.units[unitName].dimLessValueTex;
@@ -109,6 +109,9 @@ class App {
                 }
                 this.dimLessDom[unitName].innerHTML =  katex.renderToString(`= ${dimLessValue}`, {throwOnError: false})
             });
+        } else if((e.metaKey||e.ctrlKey) && e.key==='p'){
+            e.preventDefault();
+            window.print();
         }
     }
 }
