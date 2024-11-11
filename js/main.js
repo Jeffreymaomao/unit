@@ -3,7 +3,7 @@ import { units } from './phys-data.js';
 import {
     parseTexToNumber,
     number2LatexScientific
-} from './phys-math.js';
+} from './tex-parse.js';
 
 
 
