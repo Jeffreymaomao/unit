@@ -19,7 +19,7 @@ export function parseTexToNumber(tex) {
     tex = tex.replace(/\\div/g, '/');
     // ---
     // a^b -> Math.pow(a, b)
-    let max_iteration = 1000; // only accept this much `pow` in any input
+    let max_iteration = (tex.match(/\^/g)||[]).length; // only accept this much `pow` in any input
     for(let i=0;i < max_iteration; i++){
         let match = tex.match(/\^/);
         if(!match) break;
@@ -40,9 +40,8 @@ export function parseTexToNumber(tex) {
     }
 
     tex = tex.replace(/(\([^)]+\)|\d+)\^{([^}]+)}/g, '(Math.pow($1, $2))');
-    // console.log(tex)
     // ---
-    max_iteration = 1000; // only accept this much `sqrt` in any input
+    max_iteration = (tex.match(/\\sqrt/g)||[]).length; // only accept this much `sqrt` in any input
     for(let i=0;i < max_iteration; i++){
         let match = tex.match(/\\sqrt/);
         if(!match) break;
