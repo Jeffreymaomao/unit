@@ -5,8 +5,7 @@ import {
     number2LatexScientific
 } from './tex-parse.js';
 
-
-
+import { Symbolic } from './math-symbol.js';
 
 class App {
     constructor(config={}) {
