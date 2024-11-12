@@ -38,11 +38,11 @@ export function extractFirstBracesContent(str, brace='{}') {
     const braceLeft = brace[0];
     const braceRight = brace[1];
     let depth = 0;
-    let firstIndex = false;
+    let firstIndex = -1;
     for (let i = 0; i < str.length; i++) {
         if (str[i] === braceLeft) {
             depth++;
-            if(!firstIndex) firstIndex = i;
+            if(firstIndex<0) firstIndex = i;
         } else if (str[i] === braceRight) {
             depth--;
             if(depth===0) return str.slice(firstIndex+1, i);
@@ -56,11 +56,11 @@ export function extractLatestBracesContent(str, brace='{}') {
     const braceLeft = brace[0];
     const braceRight = brace[1];
     let depth = 0;
-    let firstIndex = false;
+    let firstIndex = -1;
     for (let i = str.length-1; i >= 0; i--) {
         if (str[i] === braceRight) {
             depth++;
-            if(!firstIndex) firstIndex = i;
+            if(firstIndex<0) firstIndex = i;
         } else if (str[i] === braceLeft) {
             depth--;
             if(depth===0) return str.slice(i + 1, firstIndex);
