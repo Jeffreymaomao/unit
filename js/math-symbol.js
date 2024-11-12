@@ -21,11 +21,11 @@ function extractLatestBracesContent(str, brace='{}') {
 	const braceLeft = brace[0];
 	const braceRight = brace[1];
 	let depth = 0;
-	let firstIndex = false;
+	let firstIndex = -1;
 	for (let i = str.length-1; i >= 0; i--) {
 		if (str[i] === braceRight) {
 			depth++;
-			if(!firstIndex) firstIndex = i;
+			if(firstIndex<0) firstIndex = i;
 		} else if (str[i] === braceLeft) {
 			depth--;
 			if(depth===0) return str.slice(i + 1, firstIndex);
@@ -33,9 +33,6 @@ function extractLatestBracesContent(str, brace='{}') {
 	}
 	return null;
 }
-
-console.log(extractFirstBracesContent('{x{y}z}'))
-console.log(extractFirstBracesContent('z{xx{{x{x}yz}'))
 
 export class Symbolic {
 	constructor(expression, config={}) {
@@ -49,19 +46,54 @@ export class Symbolic {
 		const product = config.product || '\\times';
 		const LBracket = config.leftBracket || '\\left(';
 		const RBracket = config.rightBracket || '\\right)';
+		const notUsingFrac = (!config.frac) || (config.divide === '/' || config.over === '/');
+		// ---
+		let parseTex = this.latex;
+		// ---
+		parseTex = parseTex.replaceAll('\\left(','(').replaceAll('\\right)',')');
+		if(!notUsingFrac) {
+			// using frac
+			let max_iteration = (parseTex.match(/\\frac/g)||[]).length; // only accept this much `frac` in any input
+			for(let i=0;i < max_iteration; i++){
+				let match = parseTex.match(/\//);
+				if(!match) break;
+				const overIndex = match.index;
+				const denominator = extractLatestBracesContent(parseTex.slice(0,overIndex), '()');
+				const numerator   = extractFirstBracesContent(parseTex.slice(overIndex+1), '()');
+				if(!denominator || !numerator) throw Error(`ParseError: parsing frac error`)
+				parseTex = parseTex.slice(0, denominator.length-1) 
+							+ `\\frac{${denominator}}{${numerator}}`
+							+ parseTex.slice(overIndex+numerator.length+2);
+			}
+		}
+		// if(true) {
+		// 	let max_iteration = (parseTex.match(/\(/g)||[]).length; // only accept this much `bracket` in any input
+		// 	for(let i=0;i < max_iteration; i++){
+		// 		let match = parseTex.match(/\(/);
+		// 		const leftBracketIndex = match.index;
+		// 		let j=leftBracketIndex;
+		// 		let depth = 
+		// 		while(j<parseTex.length){
+		// 			// run for every character
 
-		return this.latex
+		// 			j++;
+		// 		}
+		// 	}
+		// }
+		parseTex = parseTex.replaceAll('(', '\\left(').replaceAll(')', '\\right)');
+		// ---
+		return parseTex
 				.replaceAll('\\times',product)
 				.replaceAll('\\left(',LBracket)
 				.replaceAll('\\right)',RBracket);
 	}
 
-	toLaTeX() {return this.#_toTex();}
-	toLatex() {return this.#_toTex();}
-	tolatex() {return this.#_toTex();}
-	toTeX()   {return this.#_toTex();}
-	toTex()   {return this.#_toTex();}
-	totex()   {return this.#_toTex();}
+	toLaTeX(c) {return this.#_toTex(c);}
+	toLatex(c) {return this.#_toTex(c);}
+	tolatex(c) {return this.#_toTex(c);}
+	toTeX(c)   {return this.#_toTex(c);}
+	toTex(c)   {return this.#_toTex(c);}
+	totex(c)   {return this.#_toTex(c);}
 
 	//////////////////////////////////////////
 	#_parseInput2Symbolic(other) {
@@ -72,7 +104,7 @@ export class Symbolic {
 		} else if (typeof other === 'string') {
 			return new Symbolic(other);
 		} else {
-			throw new TypeError(`TypeError: Parameters must be "Symbolic", "number" or "string"`);
+			throw new TypeError(`TypeError: Parameters must be "Symbolic","number" or "string"`);
 		}
 	}
 	// ---
@@ -126,6 +158,7 @@ export class Symbolic {
 		return new Symbolic(
 			`(${this.expression})/(${_other.expression})`, {
 			latex: `\\left(${this.latex}\\right)/\\left(${_other.latex}\\right)`
+			// latex: `\\frac{${this.latex}}{${_other.latex}}`
 		});
 	}
 	// ---
