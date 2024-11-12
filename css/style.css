@@ -31,16 +31,20 @@ body {
     --shaow-light-color: rgb(255,255,255);
     --link-color: rgb(89, 122, 171);
     /* ----------------------------------- */
-    /*--font-color: rgb(220,220,220);
-    --background-color: rgb(50,50,50);
-    --shaow-dark-color: rgb(20,20,20);
-    --shaow-light-color: rgb(80,80,80);
-    --link-color: rgb(89, 122, 171);*/
-    /* ----------------------------------- */
     background: var(--background-color);
     color: var(--font-color);
     overflow: auto;
     font: normal 1.0em KaTeX_Main,Times New Roman, serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        --font-color: rgb(220,220,220);
+        --background-color: rgb(50,50,50);
+        --shaow-dark-color: rgb(20,20,20);
+        --shaow-light-color: rgb(80,80,80);
+        --link-color: rgb(89, 122, 171);
+    }
 }
 
 main {
